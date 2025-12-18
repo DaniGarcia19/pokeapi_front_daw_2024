@@ -41,4 +41,73 @@ describe('Probando el componente de la tarjeta de Pokémon', () => {
     // 4. PRUEBA DE EXISTENCIA: Verificación mínima de que se ha cargado.
     expect(wrapper.exists()).toBe(true) 
   })
+  // TEST 2: Verificar la imagen
+  test('Debe renderizar la imagen con el src correcto', () => {
+    const wrapper = mount(PokemonBoxComponent, {
+      props: {
+        name: 'squirtle',
+        number: 7,
+        img: 'https://img.com/7.png',
+        to: '/pokemon/7'
+      },
+      global: { stubs: { RouterLink: true } }
+    })
+
+    const image = wrapper.find('img')
+    // Comprobamos que el atributo 'src' de la imagen coincide con la prop 'img'
+    expect(image.attributes('src')).toBe('https://img.com/7.png')
+  })
+
+  // TEST 3: Verificar el enlace (RouterLink)
+  test('El enlace debe apuntar a la ruta correcta', () => {
+    const wrapper = mount(PokemonBoxComponent, {
+      props: {
+        name: 'squirtle',
+        number: 7,
+        img: 'url',
+        to: '/pokemon/7'
+      },
+      global: {
+        stubs: {
+          RouterLink: {
+            template: '<a :href="$attrs.to"><slot /></a>'
+          }
+        }
+      }
+    })
+
+    const link = wrapper.find('a')
+    // Verificamos que el href del enlace sea el valor de la prop 'to'
+    expect(link.attributes('href')).toBe('/pokemon/7')
+  })
+
+  // TEST 4: Accesibilidad (Atributo Alt)
+  test('La imagen debe tener un atributo alt con el nombre del Pokémon', () => {
+    const nameInput = 'squirtle'
+    const wrapper = mount(PokemonBoxComponent, {
+      props: {
+        name: nameInput,
+        number: 7,
+        img: 'url',
+        to: 'url'
+      },
+      global: { stubs: { RouterLink: true } }
+    })
+
+    const image = wrapper.find('img')
+    // Es buena práctica que las imágenes tengan 'alt' para accesibilidad
+    expect(image.attributes('alt')).toBe(nameInput)
+  })
+
+  // TEST 5: Verificar clases CSS
+  test('El componente debe tener la clase CSS base', () => {
+    const wrapper = mount(PokemonBoxComponent, {
+      props: { name: 'n', number: 1, img: 'u', to: 't' },
+      global: { stubs: { RouterLink: true } }
+    })
+
+    // Comprobamos que el elemento raíz tiene una clase esperada (ajusta 'pokemon-card' si usas otra)
+    // Si no estás seguro de la clase, puedes usar wrapper.exists() o buscar un div
+    expect(wrapper.classes()).toContain('pokemon-card') 
+  })
 })
